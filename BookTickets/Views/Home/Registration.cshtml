@@ -1,0 +1,29 @@
+﻿@model BookTickets.Models.Person
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Registration</title>
+</head>
+<body>
+    <h2>Регистрация</h2>
+    <div>
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary()
+            <p>Ваше имя: @Html.TextBoxFor(x => x.Name) </p>
+            <p>Ваш email: @Html.TextBoxFor(x => x.Email)</p>
+            <p>Ваш телефон: @Html.TextBoxFor(x => x.Phone)</p>
+            <p>Номер вашего паспорта: @Html.TextBoxFor(x => x.Passport)</p>
+            <p>Введите пароль: @Html.TextBoxFor(x => x.Password) </p>
+            <input type="submit" value="Зарегестрироваться" />
+        }
+    </div>
+</body>
+</html>

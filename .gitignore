@@ -1,0 +1,6 @@
+/packages
+/BookTickets/bin
+/BookTickets/obj
+/BookTickets/Properties
+/BookTickets/Web.Debug.config
+/BookTickets/Web.Release.config

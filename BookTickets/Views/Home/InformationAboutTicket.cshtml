@@ -1,0 +1,49 @@
+﻿@model BookTickets.Models.Ticket[]
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>InformationAboutTicket</title>
+</head>
+<body>
+    <div>
+        <h2>Рейсы:</h2>
+        @if (Model.Length > 0)
+        {
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Состояние</th>
+                        <th>Цена</th>
+                        <th>Номер места</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (BookTickets.Models.Ticket t in Model)
+                    {
+                        <tr>
+                            <td>@t.Condition</td>
+                            <td>@t.Cost</td>
+                            <td>@t.NumberOfPlace</td>
+                            @if (t.Condition == "booked")
+                            {
+                            <td>@Html.ActionLink("Купить", "TryBuy")</td>}
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h3>Нет данных о рейсах</h3>
+        }
+    </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+﻿@model BookTickets.Models.Ticket
+@using BookTickets.Controllers
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Authorization</title>
+</head>
+<body>
+    <div>
+        <h2>Здравствуйте, выберите пожалуйста место, которое хотите забронировать:</h2>
+        @using (Html.BeginForm("Book", "Home", FormMethod.Post))
+        {
+            List<SelectListItem> list = new List<SelectListItem>();//Список значений для DDL
+            list.Add(new SelectListItem() { Text = " " });
+            int[] places = Html.GetNumbersOfPlaces();//Использование расширения для получения списка значений
+            for (int i = 0; i < places.Length; i++)
+            {
+                list.Add(new SelectListItem() { Text = places[i].ToString() });//Заполняем его
+            }
+            @Html.DropDownListFor(x => x.NumberOfPlace, list, new { @id = "NumbersOfPlaces" })
+            <input type="submit" value="Забронировать" />
+        }
+    </div>
+</body>
+</html>
+
+<script>
+    @*$(function () {//Использование ajax для получения списка значений
+        $.ajax({//Вызываем асинхронный метод
+            url: '@Url.Action("Ajax", "Home")',//указываем, по какому пути лежит обработчик, то есть метод, который выполнится асинхронно
+            success: function (data) {//Данная функция выполнится в случае успеха при выполнении асинхронного метода, data - возвращенные данные в формате Json
+                $('#NumbersOfPlaces').html("");//Очищаем dropdownlist от значений
+                $('#NumbersOfPlaces').append($('<option></option>').val(" ").html(" "));//кладем пустое
+
+                $.each(data, function (index, item) {//для каждого из возвращенных значений выполняем функцию. index - индекс в списке, item - самое значение
+                    $('#NumbersOfPlaces').append($('<option></option>').val(item).html(item));//кладем определенным образом это значение в dropdownlist
+                });
+            }
+        });
+    });*@
+</script>

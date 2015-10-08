@@ -1,0 +1,27 @@
+﻿@model BookTickets.Models.LogInPerson
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Authorization</title>
+</head>
+<body>
+    <div>
+        <h2>Войдите в свою учетную запись или зарегистрируйтесь</h2>
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary()
+            <p>Ваш логин: @Html.TextBoxFor(x => x.Name) </p>
+            <p>Ваш пароль: @Html.TextBoxFor(x => x.Password)</p>
+            <input type="submit" value="Войти" />
+        }
+        @Html.ActionLink("Зарегистрироваться", "Registration")
+    </div>
+</body>
+</html>

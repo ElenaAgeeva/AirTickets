@@ -1,0 +1,54 @@
+﻿@model List<BookTickets.Models.Route>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Routes</title>
+</head>
+<body>
+    <div>
+        <h2>Рейсы:</h2>
+@using (Html.BeginForm())
+{
+        if (Model.Count > 0)
+        {
+           
+            <table>
+                <thead>
+                    <tr>
+                        <th>Откуда</th>
+                        <th>Куда</th>
+                        <th>Номер рейса</th>
+                        <th>Время вылета</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (BookTickets.Models.Route p in Model)
+                    {
+                        <tr>
+                            <td>@p.StartPoint</td>
+                            <td>@p.FinishPoint</td>
+                            <td>@p.RouteNumber</td>
+                            <td>@p.TimeArrival</td>
+                            <td><input type="button" value="Buy" onclick="location.href='@Url.Action("BuyFromIndex", "Home", new { routeId=p.RouteID })'"></td>
+                            <td><input type="button" value="Book" onclick="location.href='@Url.Action("BookFromIndex", "Home", new { routeId = p.RouteID })'"></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            
+        }
+        else
+        {
+            <h3>Нет данных о рейсах</h3>
+        }
+}
+    </div>
+</body>
+</html>
