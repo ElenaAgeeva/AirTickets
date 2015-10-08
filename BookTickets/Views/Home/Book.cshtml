@@ -19,7 +19,7 @@
         {
             List<SelectListItem> list = new List<SelectListItem>();//Список значений для DDL
             list.Add(new SelectListItem() { Text = " " });
-            int[] places = Html.GetNumbersOfPlaces();//Использование расширения для получения списка значений
+            int[] places = Html.GetNumbersOfPlaces(Model.Route.RouteID);//Использование расширения для получения списка значений
             for (int i = 0; i < places.Length; i++)
             {
                 list.Add(new SelectListItem() { Text = places[i].ToString() });//Заполняем его
