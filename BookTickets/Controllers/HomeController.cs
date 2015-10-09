@@ -9,44 +9,6 @@ namespace BookTickets.Controllers
 {
     public class HomeController : Controller
     {
-        /*public ActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Login(User u)
-        {
-            //this action is for handle post (login)
-            if (ModelState.IsValid)//this is check validity
-            {
-                using (MyDatabaseEntities dc=new MyDatabaseEntities())
-                {
-                    var v = dc.Users.Where(a => a.UserName.Equals(u.UserName) && a.Password.Equals(u.Password)).FirstOrDefault();
-                    if (v!=null)
-                    {
-                        Session["LogedUserID"] = v.UserID.ToString();
-                        Session["LogedUserFullname"] = v.FullName.ToString();
-                        return RedirectToAction("AfterLogin");
-                    }
-                }
-            }
-            return View(u);
-        }
-
-        public ActionResult AfterLogin()
-        {
-            if (Session["LogedUserID"]!=null)
-            {
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }*/
-
         [HttpGet]
         public ActionResult Index()
         {
@@ -60,34 +22,14 @@ namespace BookTickets.Controllers
 
         public ActionResult BuyFromIndex(int routeId)
         {
-            //char[] forsplit={' '};
-            //string[] inf=button.Split(forsplit);
             Session["RouteID"] = routeId;
-            //if (inf[1].Equals("Buy"))
-            //{
-                return RedirectToAction("TryBuy");
-            //}
-            //if (inf[1].Equals("Book"))
-            //{
-            //    return RedirectToAction("TryBook");
-            //}
-            //return View("Index");
+            return RedirectToAction("TryBuy");
         }
 
         public ActionResult BookFromIndex(int routeId)
         {
-            //char[] forsplit = { ' ' };
-            //string[] inf = button.Split(forsplit);
             Session["RouteID"] = routeId;
-            //if (inf[1].Equals("Buy"))
-            //{
-            //    return RedirectToAction("TryBuy");
-            //}
-            //if (inf[1].Equals("Book"))
-            //{
-                return RedirectToAction("TryBook");
-            //}
-            //return View("Index");
+            return RedirectToAction("TryBook");
         }
 
         [HttpGet]
@@ -122,6 +64,19 @@ namespace BookTickets.Controllers
         [HttpGet]
         public ActionResult Buy()
         {
+            /*Ticket ticket = new Ticket();
+            using (UserContext db = new UserContext())
+            {
+                string s = Session["RouteID"].ToString();
+                if (s != null)
+                {
+                    int r = Convert.ToInt32(s);
+                    var rout = (from dbroutes in db.Routes
+                                where (dbroutes.RouteID.Equals(r))
+                                select dbroutes).FirstOrDefault();
+                    ticket.Route = rout;
+                }
+            }*/
             Ticket ticket = new Ticket() { Route = new Route() { RouteID = Convert.ToInt32(Session["RouteID"]) } };
             return View("Buy", ticket);
         }
@@ -131,21 +86,18 @@ namespace BookTickets.Controllers
         {
             if (tick.NumberOfPlace != 0)
             {
-                List<Ticket> tickets = new List<Ticket>();
-                //находим кол-во мест в самолете
                 using (UserContext db = new UserContext())
                 {
-                    int countst = (from dbroutes in db.Routes
-                                 where dbroutes.RouteID.Equals(Convert.ToInt32(Session["RouteID"].ToString()))
-                                 select dbroutes.MaxNumberOfPlace).FirstOrDefault();
-                    //int count = countst;
-                        
-                     var y=   (from dbtickets in db.Tickets
-                                 where dbtickets.Route == Session["RouteID"]
-                                 select dbtickets.NumberOfPlace);
-
+                    tick.Condition = "bought";
+                    string s1 = Session["LogInUserName"].ToString();
+                    string s2 = Session["LogInUserPassword"].ToString();
+                    var per = (from dbpersons in db.Persons
+                               where (dbpersons.Name.Equals(s1) && dbpersons.Password.Equals(s2))
+                             select dbpersons.PersonID).FirstOrDefault();
+                    tick.Person = new Person { PersonID = per };
+                    //tick.Person.PersonID = per;
+                    db.Tickets.Add(tick);//Почему он не добавляется?!!!!!!!!!!
                 }
-                //places = places.Where(n => n != tick.NumberOfPlace).ToArray();
                 return RedirectToAction("TicketInformation");
             }
             else
@@ -159,11 +111,13 @@ namespace BookTickets.Controllers
             List<Ticket> tickets = new List<Ticket>();
             using (UserContext db = new UserContext())
             {
-                var t = (from dbtickets in db.Persons
-                         where (dbtickets.Name.Equals(Session["LogInUserName"].ToString())
-                         && (dbtickets.Password.Equals(Session["LogInUserPassword"].ToString())))
-                         select dbtickets.PersonID).FirstOrDefault();
-                tickets = (from dbtickets in db.Tickets where dbtickets.Person.Equals(t) select dbtickets).ToList();
+                string s1 = Session["LogInUserName"].ToString();
+                string s2 = Session["LogInUserPassword"].ToString();
+                var t = (from dbpersons in db.Persons
+                         where (dbpersons.Name.Equals(s1)
+                         && (dbpersons.Password.Equals(s2)))
+                         select dbpersons.PersonID).FirstOrDefault();
+                tickets = (from dbtickets in db.Tickets where dbtickets.Person.PersonID.Equals(t) select dbtickets).ToList();
             }
             return View("InformationAboutTicket", tickets);
         }
@@ -194,7 +148,10 @@ namespace BookTickets.Controllers
         {
             if (check(logperson.Name, logperson.Password))
             {
+                Session["LogInUserPassword"] = logperson.Password;
+                Session["LogInUserName"] = logperson.Name;
                 return RedirectToAction("Book");
+
             }
             else
             {
@@ -205,7 +162,8 @@ namespace BookTickets.Controllers
         [HttpGet]
         public ActionResult Book()
         {
-            return View("Book");
+            Ticket ticket = new Ticket() { Route = new Route() { RouteID = Convert.ToInt32(Session["RouteID"]) } };
+            return View("Book",ticket);
         }
 
         [HttpPost]
@@ -217,13 +175,18 @@ namespace BookTickets.Controllers
                 //places = places.Where(n => n != tick.NumberOfPlace).ToArray();
                 using (UserContext db = new UserContext())
                 {
-                    var t = (from dbtickets in db.Persons
-                             where (dbtickets.Name.Equals(Session["LogInUserName"].ToString())
-                             && (dbtickets.Password.Equals(Session["LogInUserPassword"].ToString())))
-                             select dbtickets.PersonID).FirstOrDefault();
-                    tickets = (from dbtickets in db.Tickets where dbtickets.Person.Equals(t) select dbtickets).ToList();
+                    tick.Condition = "booked";
+                    string s1 = Session["LogInUserName"].ToString();
+                    string s2 = Session["LogInUserPassword"].ToString();
+                    var per = (from dbpersons in db.Persons
+                               where (dbpersons.Name.Equals(s1) && dbpersons.Password.Equals(s2))
+                               select dbpersons.PersonID).FirstOrDefault();
+                    tick.Person = new Person { PersonID = per };
+                    tick.Cost = 165;
+                    //tick.Person.PersonID = per;
+                    db.Tickets.Add(tick);//Почему он не добавляется?!!!!!!!!!!
                 }
-                return View("InformationAboutTicket", tickets);
+                return RedirectToAction("TicketInformation");
             }
             else
             {
@@ -238,12 +201,16 @@ namespace BookTickets.Controllers
         }
 
         [HttpPost]
-        public ViewResult RsvpForm(Person regPerson)
+        public ViewResult Registration(Person regPerson)
         {
             if (ModelState.IsValid)
             {
                 Session["LogInUserPassword"] = regPerson.Password;
                 Session["LogInUserName"] = regPerson.Name;
+                using (UserContext db = new UserContext())
+                {
+                    db.Persons.Add(regPerson);
+                }
                 //добавить человека в базу
                 return View("Thanks", regPerson);
             }
@@ -267,7 +234,6 @@ namespace BookTickets.Controllers
         {
             List<int> freetickets = new List<int>();
             List<int> busytickets = new List<int>();
-            //находим кол-во мест в самолете
             using (UserContext db = new UserContext())
             {
                 int RouteId = routeId;
@@ -281,12 +247,6 @@ namespace BookTickets.Controllers
                     busytickets = (from dbtickets in db.Tickets
                                    where dbtickets.Route.RouteID.Equals(RouteId)
                                    select dbtickets.NumberOfPlace).ToList();
-                    /*foreach (int u in busytickets2)
-                    {
-                        busytickets.Add(u);
-                    }
-                    int[] p= busytickets2.ToArray();*/
-
                     for (int i = 1; i <= countOfPlace; i++)
                     {
                         if (!busytickets.Contains(i)) { freetickets.Add(i); }

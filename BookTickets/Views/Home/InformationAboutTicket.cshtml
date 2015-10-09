@@ -1,4 +1,4 @@
-﻿@model BookTickets.Models.Ticket[]
+﻿@model List<BookTickets.Models.Ticket>
 
 @{
     Layout = null;
@@ -14,7 +14,7 @@
 <body>
     <div>
         <h2>Рейсы:</h2>
-        @if (Model.Length > 0)
+        @if (Model.Count > 0)
         {
 
             <table>

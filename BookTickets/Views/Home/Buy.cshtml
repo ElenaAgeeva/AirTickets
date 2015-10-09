@@ -25,6 +25,7 @@
                 list.Add(new SelectListItem() { Text = places[i].ToString() });//Заполняем его
             }
             @Html.DropDownListFor(x => x.NumberOfPlace, list, new { @id = "NumbersOfPlaces" })
+            @Html.HiddenFor(x => x.Route.RouteID);
             <input type="submit" value="Купить" />
         }
     </div>
