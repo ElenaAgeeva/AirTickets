@@ -12,7 +12,11 @@
 </head>
 <body>
     <div>
-        <p>Вы были успешно зарегестрированы.</p>
+        @using (Html.BeginForm())
+        {
+            <p>Вы были успешно зарегестрированы.</p>
+            <input type="button" value="Перейти на главную страницу" onclick="location.href='@Url.Action("Index", "Home")'">
+        }
     </div>
 </body>
 </html>

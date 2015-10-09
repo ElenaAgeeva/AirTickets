@@ -21,7 +21,6 @@
                 <thead>
                     <tr>
                         <th>Состояние</th>
-                        <th>Цена</th>
                         <th>Номер места</th>
                     </tr>
                 </thead>
@@ -30,11 +29,16 @@
                     {
                         <tr>
                             <td>@t.Condition</td>
-                            <td>@t.Cost</td>
                             <td>@t.NumberOfPlace</td>
                             @if (t.Condition == "booked")
                             {
-                            <td>@Html.ActionLink("Купить", "TryBuy")</td>}
+                                <td><input type="button" value="Отменить бронирование" onclick="location.href='@Url.Action("CancelBook", "Home", new { ticketId = t.TicketID })'"></td>
+                                <td>@Html.ActionLink("Купить", "TryBuy")</td>
+                            }
+                            @if (t.Condition == "bought")
+                            {
+                                <td><input type="button" value="Вернуть билет" onclick="location.href='@Url.Action("ReturnTicket", "Home", new { ticketId = t.TicketID })'"></td>
+                            }
                         </tr>
                     }
                 </tbody>
@@ -44,6 +48,8 @@
         {
             <h3>Нет данных о рейсах</h3>
         }
+        <br />
+        <input type="button" value="Перейти на главную страницу" onclick="location.href='@Url.Action("Index", "Home")'">
     </div>
 </body>
 </html>

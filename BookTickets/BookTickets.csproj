@@ -134,6 +134,14 @@
     <Compile Include="Migrations\201510071609049_Person.Designer.cs">
       <DependentUpon>201510071609049_Person.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510091029455_add cost.cs" />
+    <Compile Include="Migrations\201510091029455_add cost.Designer.cs">
+      <DependentUpon>201510091029455_add cost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201510091111084_is deleted.cs" />
+    <Compile Include="Migrations\201510091111084_is deleted.Designer.cs">
+      <DependentUpon>201510091111084_is deleted.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\LogInPerson.cs" />
     <Compile Include="Models\Person.cs" />
@@ -245,6 +253,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201510071609049_Person.resx">
       <DependentUpon>201510071609049_Person.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510091029455_add cost.resx">
+      <DependentUpon>201510091029455_add cost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510091111084_is deleted.resx">
+      <DependentUpon>201510091111084_is deleted.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

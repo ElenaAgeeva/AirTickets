@@ -15,6 +15,7 @@ namespace BookTickets.Models
         public string RouteNumber { get; set; }
         public DateTime TimeArrival { get; set; }
         public int MaxNumberOfPlace { get; set; }
+        public int Cost { get; set; }
         public virtual ICollection<Ticket> Tickets { get; set; }
     }
 }

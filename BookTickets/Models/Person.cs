@@ -27,6 +27,6 @@ namespace BookTickets.Models
         [Required(ErrorMessage = "Please enter your password")]
         public string Password { get; set; }
 
-        public virtual ICollection<Ticket> Ticket { get; set; }
+        public virtual ICollection<Ticket> Ticket { get; set; } //что это за поле????!!!
     }
 }

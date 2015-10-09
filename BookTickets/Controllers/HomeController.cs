@@ -37,7 +37,7 @@ namespace BookTickets.Controllers
         {
             if (Session["LogInUserPassword"] != null && Session["LogInUserName"] != null)
             {
-                return View("Buy");
+                return RedirectToAction("Buy");
             }
             else
             {
@@ -64,7 +64,7 @@ namespace BookTickets.Controllers
         [HttpGet]
         public ActionResult Buy()
         {
-            /*Ticket ticket = new Ticket();
+            Ticket ticket = new Ticket();
             using (UserContext db = new UserContext())
             {
                 string s = Session["RouteID"].ToString();
@@ -76,8 +76,7 @@ namespace BookTickets.Controllers
                                 select dbroutes).FirstOrDefault();
                     ticket.Route = rout;
                 }
-            }*/
-            Ticket ticket = new Ticket() { Route = new Route() { RouteID = Convert.ToInt32(Session["RouteID"]) } };
+            }
             return View("Buy", ticket);
         }
 
@@ -93,10 +92,10 @@ namespace BookTickets.Controllers
                     string s2 = Session["LogInUserPassword"].ToString();
                     var per = (from dbpersons in db.Persons
                                where (dbpersons.Name.Equals(s1) && dbpersons.Password.Equals(s2))
-                             select dbpersons.PersonID).FirstOrDefault();
-                    tick.Person = new Person { PersonID = per };
-                    //tick.Person.PersonID = per;
-                    db.Tickets.Add(tick);//Почему он не добавляется?!!!!!!!!!!
+                             select dbpersons).FirstOrDefault();
+                    tick.Person = per;
+                    db.Tickets.Add(tick);
+                    db.SaveChanges();
                 }
                 return RedirectToAction("TicketInformation");
             }
@@ -162,7 +161,19 @@ namespace BookTickets.Controllers
         [HttpGet]
         public ActionResult Book()
         {
-            Ticket ticket = new Ticket() { Route = new Route() { RouteID = Convert.ToInt32(Session["RouteID"]) } };
+            Ticket ticket = new Ticket();
+            using (UserContext db = new UserContext())
+            {
+                string s = Session["RouteID"].ToString();
+                if (s != null)
+                {
+                    int r = Convert.ToInt32(s);
+                    var rout = (from dbroutes in db.Routes
+                                where (dbroutes.RouteID.Equals(r))
+                                select dbroutes).FirstOrDefault();
+                    ticket.Route = rout;
+                }
+            }
             return View("Book",ticket);
         }
 
@@ -172,7 +183,6 @@ namespace BookTickets.Controllers
             if (tick.NumberOfPlace != 0)
             {
                 List<Ticket> tickets = new List<Ticket>();
-                //places = places.Where(n => n != tick.NumberOfPlace).ToArray();
                 using (UserContext db = new UserContext())
                 {
                     tick.Condition = "booked";
@@ -180,11 +190,10 @@ namespace BookTickets.Controllers
                     string s2 = Session["LogInUserPassword"].ToString();
                     var per = (from dbpersons in db.Persons
                                where (dbpersons.Name.Equals(s1) && dbpersons.Password.Equals(s2))
-                               select dbpersons.PersonID).FirstOrDefault();
-                    tick.Person = new Person { PersonID = per };
-                    tick.Cost = 165;
-                    //tick.Person.PersonID = per;
+                               select dbpersons).FirstOrDefault();
+                    tick.Person = per ;
                     db.Tickets.Add(tick);//Почему он не добавляется?!!!!!!!!!!
+                    db.SaveChanges();
                 }
                 return RedirectToAction("TicketInformation");
             }
@@ -210,8 +219,8 @@ namespace BookTickets.Controllers
                 using (UserContext db = new UserContext())
                 {
                     db.Persons.Add(regPerson);
+                    db.SaveChanges();
                 }
-                //добавить человека в базу
                 return View("Thanks", regPerson);
             }
             else
@@ -220,6 +229,31 @@ namespace BookTickets.Controllers
             }
         }
 
+        public ActionResult CancelBook(int ticketId)
+        {
+            using (UserContext db = new UserContext())
+            {
+                Ticket tic = (from dbtickets in db.Tickets
+                           where (dbtickets.TicketID.Equals(ticketId))
+                           select dbtickets).FirstOrDefault();
+                tic.IsDeleted = true;
+                db.SaveChanges();
+            }
+            return RedirectToAction("TicketInformation");
+        }
+
+        public ActionResult ReturnTicket(int ticketId)
+        {
+            using (UserContext db = new UserContext())
+            {
+                Ticket tic = (from dbtickets in db.Tickets
+                              where (dbtickets.TicketID.Equals(ticketId))
+                              select dbtickets).FirstOrDefault();
+                tic.IsDeleted = true;
+                db.SaveChanges();
+            }
+            return RedirectToAction("TicketInformation");
+        }
 
         /*public JsonResult Ajax()//Метод, который выполяется асинхронно при помощи Ajax, может называться как угодно
         {

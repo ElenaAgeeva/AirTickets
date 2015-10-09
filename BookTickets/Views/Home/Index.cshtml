@@ -36,8 +36,9 @@
                             <td>@p.FinishPoint</td>
                             <td>@p.RouteNumber</td>
                             <td>@p.TimeArrival</td>
-                            <td><input type="button" value="Buy" onclick="location.href='@Url.Action("BuyFromIndex", "Home", new { routeId=p.RouteID })'"></td>
-                            <td><input type="button" value="Book" onclick="location.href='@Url.Action("BookFromIndex", "Home", new { routeId = p.RouteID })'"></td>
+                            <td>@p.Cost</td>
+                            <td><input type="button" value="Купить" onclick="location.href='@Url.Action("BuyFromIndex", "Home", new { routeId=p.RouteID })'"></td>
+                            <td><input type="button" value="Забронировать" onclick="location.href='@Url.Action("BookFromIndex", "Home", new { routeId = p.RouteID })'"></td>
                         </tr>
                     }
                 </tbody>
