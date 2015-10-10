@@ -6,10 +6,19 @@ using System.Web;
 
 namespace BookTickets.Models
 {
-    public class Route
+    public class Route : Base<int>
     {
+        int _routeID;
         [Key]
-        public int RouteID { get; set; }
+        public int RouteID 
+        {
+            get { return _routeID; }
+            set
+            {
+                _routeID = value;
+                Id = value;
+            }
+        }
         public string StartPoint { get; set; }
         public string FinishPoint { get; set; }
         public string RouteNumber { get; set; }

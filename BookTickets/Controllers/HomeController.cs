@@ -13,9 +13,9 @@ namespace BookTickets.Controllers
         public ActionResult Index()
         {
             List<Route> Listroutes = new List<Route>();
-            using (UserContext db = new UserContext())
+            using (WorkWithDatabase db = new WorkWithDatabase())
             {
-                Listroutes = db.Routes.ToList();
+                Listroutes = db.GetEntityList<Route>();
             }
             return View(Listroutes);
         }
@@ -48,10 +48,10 @@ namespace BookTickets.Controllers
         [HttpPost]
         public ActionResult TryBuy(LogInPerson logperson)
         {
-            if (check(logperson.Name, logperson.Password))
+            if (check(logperson.LogName, logperson.Password.GetHashCode().ToString()))
             {
-                Session["LogInUserPassword"] = logperson.Password;
-                Session["LogInUserName"] = logperson.Name;
+                Session["LogInUserPassword"] = logperson.Password.GetHashCode().ToString();
+                Session["LogInUserName"] = logperson.LogName;
                 return RedirectToAction("Buy");
                 
             }
@@ -65,15 +65,13 @@ namespace BookTickets.Controllers
         public ActionResult Buy()
         {
             Ticket ticket = new Ticket();
-            using (UserContext db = new UserContext())
+            using (WorkWithDatabase db = new WorkWithDatabase())
             {
                 string s = Session["RouteID"].ToString();
                 if (s != null)
                 {
                     int r = Convert.ToInt32(s);
-                    var rout = (from dbroutes in db.Routes
-                                where (dbroutes.RouteID.Equals(r))
-                                select dbroutes).FirstOrDefault();
+                    var rout = db.GetEntityById<Route, int>(r);
                     ticket.Route = rout;
                 }
             }
@@ -85,17 +83,17 @@ namespace BookTickets.Controllers
         {
             if (tick.NumberOfPlace != 0)
             {
-                using (UserContext db = new UserContext())
+                using (WorkWithDatabase db = new WorkWithDatabase())
                 {
                     tick.Condition = "bought";
                     string s1 = Session["LogInUserName"].ToString();
                     string s2 = Session["LogInUserPassword"].ToString();
-                    var per = (from dbpersons in db.Persons
-                               where (dbpersons.Name.Equals(s1) && dbpersons.Password.Equals(s2))
-                             select dbpersons).FirstOrDefault();
+                    var per = db.GetEntityList<Person>().Where(x => x.LogName.Equals(s1) && x.Password.Equals(s2)).FirstOrDefault();
+                    var route = db.GetEntityById<Route, int>(tick.Route.RouteID);
                     tick.Person = per;
-                    db.Tickets.Add(tick);
-                    db.SaveChanges();
+                    tick.Route = route;
+                    db.Insert<Ticket>(tick);
+                    db.Commit();
                 }
                 return RedirectToAction("TicketInformation");
             }
@@ -108,24 +106,29 @@ namespace BookTickets.Controllers
         public ActionResult TicketInformation()
         {
             List<Ticket> tickets = new List<Ticket>();
-            using (UserContext db = new UserContext())
+            using (WorkWithDatabase db = new WorkWithDatabase())
             {
                 string s1 = Session["LogInUserName"].ToString();
                 string s2 = Session["LogInUserPassword"].ToString();
-                var t = (from dbpersons in db.Persons
-                         where (dbpersons.Name.Equals(s1)
-                         && (dbpersons.Password.Equals(s2)))
-                         select dbpersons.PersonID).FirstOrDefault();
-                tickets = (from dbtickets in db.Tickets where dbtickets.Person.PersonID.Equals(t) select dbtickets).ToList();
+                var t = db.GetEntityList<Person>().Where(x => x.LogName.Equals(s1) && x.Password.Equals(s2)).Select(x => x.PersonID).FirstOrDefault();
+
+                tickets = db.GetEntityList<Ticket>().Where(x => x.Person.PersonID.Equals(t)).ToList();
             }
             return View("InformationAboutTicket", tickets);
         }
 
         private bool check(string name, string pass)
         {
-            using (UserContext db=new UserContext())
+            using (WorkWithDatabase db = new WorkWithDatabase())
             {
-                return db.Persons.Where(x => x.Name.Equals(name) && x.Password.Equals(pass)).Count() > 0;
+                try
+                {
+                    return db.GetEntityList<Person>().Where(x => x.LogName.Equals(name) && x.Password.Equals(pass)).Count() > 0;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
             }
         }
 
@@ -145,10 +148,10 @@ namespace BookTickets.Controllers
         [HttpPost]
         public ActionResult TryBook(LogInPerson logperson)
         {
-            if (check(logperson.Name, logperson.Password))
+            if (check(logperson.LogName, logperson.Password.GetHashCode().ToString()))
             {
-                Session["LogInUserPassword"] = logperson.Password;
-                Session["LogInUserName"] = logperson.Name;
+                Session["LogInUserPassword"] = logperson.Password.GetHashCode().ToString();
+                Session["LogInUserName"] = logperson.LogName;
                 return RedirectToAction("Book");
 
             }
@@ -162,15 +165,13 @@ namespace BookTickets.Controllers
         public ActionResult Book()
         {
             Ticket ticket = new Ticket();
-            using (UserContext db = new UserContext())
+            using (WorkWithDatabase db = new WorkWithDatabase())
             {
                 string s = Session["RouteID"].ToString();
                 if (s != null)
                 {
                     int r = Convert.ToInt32(s);
-                    var rout = (from dbroutes in db.Routes
-                                where (dbroutes.RouteID.Equals(r))
-                                select dbroutes).FirstOrDefault();
+                    var rout = db.GetEntityById<Route, int>(r);
                     ticket.Route = rout;
                 }
             }
@@ -183,17 +184,15 @@ namespace BookTickets.Controllers
             if (tick.NumberOfPlace != 0)
             {
                 List<Ticket> tickets = new List<Ticket>();
-                using (UserContext db = new UserContext())
+                using (WorkWithDatabase db = new WorkWithDatabase())
                 {
                     tick.Condition = "booked";
                     string s1 = Session["LogInUserName"].ToString();
                     string s2 = Session["LogInUserPassword"].ToString();
-                    var per = (from dbpersons in db.Persons
-                               where (dbpersons.Name.Equals(s1) && dbpersons.Password.Equals(s2))
-                               select dbpersons).FirstOrDefault();
+                    var per = db.GetEntityList<Person>().Where(x => x.LogName.Equals(s1) && x.Password.Equals(s2)).FirstOrDefault();
                     tick.Person = per ;
-                    db.Tickets.Add(tick);//Почему он не добавляется?!!!!!!!!!!
-                    db.SaveChanges();
+                    db.Insert<Ticket>(tick);
+                    db.Commit();
                 }
                 return RedirectToAction("TicketInformation");
             }
@@ -214,12 +213,13 @@ namespace BookTickets.Controllers
         {
             if (ModelState.IsValid)
             {
-                Session["LogInUserPassword"] = regPerson.Password;
-                Session["LogInUserName"] = regPerson.Name;
-                using (UserContext db = new UserContext())
+                Session["LogInUserPassword"] = regPerson.Password.GetHashCode().ToString();
+                Session["LogInUserName"] = regPerson.LogName;
+                using (WorkWithDatabase db = new WorkWithDatabase())
                 {
-                    db.Persons.Add(regPerson);
-                    db.SaveChanges();
+                    regPerson.Password = regPerson.Password.GetHashCode().ToString();
+                    db.Insert<Person>(regPerson);
+                    db.Commit();
                 }
                 return View("Thanks", regPerson);
             }
@@ -231,26 +231,22 @@ namespace BookTickets.Controllers
 
         public ActionResult CancelBook(int ticketId)
         {
-            using (UserContext db = new UserContext())
+            using (WorkWithDatabase db = new WorkWithDatabase())
             {
-                Ticket tic = (from dbtickets in db.Tickets
-                           where (dbtickets.TicketID.Equals(ticketId))
-                           select dbtickets).FirstOrDefault();
+                Ticket tic = db.GetEntityById<Ticket, int>(ticketId);
                 tic.IsDeleted = true;
-                db.SaveChanges();
+                db.Commit();
             }
             return RedirectToAction("TicketInformation");
         }
 
         public ActionResult ReturnTicket(int ticketId)
         {
-            using (UserContext db = new UserContext())
+            using (WorkWithDatabase db = new WorkWithDatabase())
             {
-                Ticket tic = (from dbtickets in db.Tickets
-                              where (dbtickets.TicketID.Equals(ticketId))
-                              select dbtickets).FirstOrDefault();
+                Ticket tic = db.GetEntityById<Ticket, int>(ticketId);
                 tic.IsDeleted = true;
-                db.SaveChanges();
+                db.Commit();
             }
             return RedirectToAction("TicketInformation");
         }
@@ -268,19 +264,15 @@ namespace BookTickets.Controllers
         {
             List<int> freetickets = new List<int>();
             List<int> busytickets = new List<int>();
-            using (UserContext db = new UserContext())
+            using (WorkWithDatabase db = new WorkWithDatabase())
             {
                 int RouteId = routeId;
-                var countst = (from dbroutes in db.Routes
-                               where dbroutes.RouteID.Equals(RouteId)
-                               select dbroutes.MaxNumberOfPlace).FirstOrDefault();
+                var countst = db.GetEntityById<Route, int>(RouteId).MaxNumberOfPlace;
                 if (countst > 0)
                 {
                     int countOfPlace = Convert.ToInt32(countst);
                     int[] masplace = new int[countOfPlace];
-                    busytickets = (from dbtickets in db.Tickets
-                                   where dbtickets.Route.RouteID.Equals(RouteId)
-                                   select dbtickets.NumberOfPlace).ToList();
+                    busytickets = db.GetEntityList<Ticket>().Where(x => x.Route.Id.Equals(RouteId)).Select(x => x.NumberOfPlace).ToList();
                     for (int i = 1; i <= countOfPlace; i++)
                     {
                         if (!busytickets.Contains(i)) { freetickets.Add(i); }

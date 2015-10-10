@@ -1,7 +1,7 @@
 ﻿@model BookTickets.Models.Person
 
 @{
-    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!DOCTYPE html>
@@ -14,16 +14,48 @@
 <body>
     <h2>Регистрация</h2>
     <div>
-        @using (Html.BeginForm())
+        @using (Html.BeginForm(new { @class = "form-horizontal" }))
         {
             @Html.ValidationSummary()
-            <p>Ваше имя: @Html.TextBoxFor(x => x.Name) </p>
-            <p>Ваш email: @Html.TextBoxFor(x => x.Email)</p>
-            <p>Ваш телефон: @Html.TextBoxFor(x => x.Phone)</p>
-            <p>Номер вашего паспорта: @Html.TextBoxFor(x => x.Passport)</p>
-            <p>Введите пароль: @Html.TextBoxFor(x => x.Password) </p>
-            <input type="submit" value="Зарегестрироваться" />
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-3">
+                    <p>Ваше имя: @Html.TextBoxFor(x => x.Name) </p>
+                </div>
+            </div>
+    <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-3">
+            <p>Ваш логин: @Html.TextBoxFor(x => x.LogName) </p>
+        </div>
+    </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-3">
+                    <p>Ваш email: @Html.TextBoxFor(x => x.Email)</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-3">
+                    <p>Ваш телефон: @Html.TextBoxFor(x => x.Phone)</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-3">
+                    <p>Номер вашего паспорта: @Html.TextBoxFor(x => x.Passport)</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-3">
+                    <p>Введите пароль: @Html.PasswordFor(x => x.Password) </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-3">
+                    <input type="submit" value="Зарегестрироваться" />
+                </div>
+            </div>
         }
     </div>
+
+
+
 </body>
 </html>

@@ -27,6 +27,7 @@
                 <tbody>
                     @foreach (BookTickets.Models.Ticket t in Model)
                     {
+                        if (t.IsDeleted == false) { 
                         <tr>
                             <td>@t.Condition</td>
                             <td>@t.NumberOfPlace</td>
@@ -40,6 +41,7 @@
                                 <td><input type="button" value="Вернуть билет" onclick="location.href='@Url.Action("ReturnTicket", "Home", new { ticketId = t.TicketID })'"></td>
                             }
                         </tr>
+                        }
                     }
                 </tbody>
             </table>

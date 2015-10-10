@@ -6,10 +6,19 @@ using System.Web;
 
 namespace BookTickets.Models
 {
-    public class Ticket
+    public class Ticket : Base<int>
     {
+        int _ticketID;
         [Key]
-        public int TicketID { get; set; }
+        public int TicketID 
+        {
+            get { return _ticketID; }
+            set
+            {
+                _ticketID = value;
+                Id = value;
+            }
+        }
         public int NumberOfPlace { get; set; }
         public string Condition { get; set; }
         public bool IsDeleted { get; set; }

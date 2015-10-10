@@ -24,20 +24,28 @@
             {
                 list.Add(new SelectListItem() { Text = places[i].ToString() });//Заполняем его
             }
-            @Html.DropDownListFor(x => x.NumberOfPlace, list, new { @id = "NumbersOfPlaces" })
-            @Html.HiddenFor(x => x.Route.RouteID);
-            @Html.HiddenFor(x => x.Route.Cost);
-            @Html.HiddenFor(x => x.Route.FinishPoint);
-            @Html.HiddenFor(x => x.Route.StartPoint);
-            @Html.HiddenFor(x => x.Route.TimeArrival);
-            @Html.HiddenFor(x => x.Route.MaxNumberOfPlace);
-            @Html.HiddenFor(x => x.Route.RouteNumber);
-            <input type="submit" value="Забронировать" />
-            <input type="button" value="Отмена" onclick="location.href='@Url.Action("Index", "Home")'">
-        }
-    </div>
+            <div class="col-md-1">
+                @Html.DropDownListFor(x => x.NumberOfPlace, list, new { @id = "NumbersOfPlaces", @class = "form-control" })
+             </div>
+                @Html.HiddenFor(x => x.Route.RouteID);
+                @Html.HiddenFor(x => x.Route.Cost);
+                @Html.HiddenFor(x => x.Route.FinishPoint);
+                @Html.HiddenFor(x => x.Route.StartPoint);
+                @Html.HiddenFor(x => x.Route.TimeArrival);
+                @Html.HiddenFor(x => x.Route.MaxNumberOfPlace);
+                @Html.HiddenFor(x => x.Route.RouteNumber);
+                <input class="btn btn-default" type="submit" value="Забронировать" />
+                <input class="btn btn-default" type="button" value="Отмена" onclick="location.href='@Url.Action("Index", "Home")'">
+                }
+            </div>
 </body>
 </html>
+
+<style>
+    h2 {
+        margin-left: 10px;
+    }
+</style>
 
 <script>
     @*$(function () {//Использование ajax для получения списка значений
