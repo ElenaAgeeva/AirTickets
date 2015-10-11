@@ -2,6 +2,6 @@
 /packages
 /BookTickets/bin
 /BookTickets/obj
-/BookTickets/Properties
+/BookTickets/Properties/AssemblyInfo.cs
 /BookTickets/Web.Debug.config
 /BookTickets/Web.Release.config

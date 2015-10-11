@@ -1,7 +1,7 @@
 ﻿@model BookTickets.Models.Person
 
 @{
-    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!DOCTYPE html>
@@ -14,8 +14,8 @@
     <div>
         @using (Html.BeginForm())
         {
-            <p>Вы были успешно зарегестрированы.</p>
-            <input type="button" value="Перейти на главную страницу" onclick="location.href='@Url.Action("Index", "Home")'">
+            <h4>Вы были успешно зарегестрированы.</h4>
+    <input class="btn btn-default" type="button" value="Перейти на главную страницу" onclick="location.href='@Url.Action("Index", "Home")'">
         }
     </div>
 </body>

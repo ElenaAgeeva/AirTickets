@@ -149,6 +149,10 @@
     <Compile Include="Migrations\201510101934519_AddingLogNameColumn.Designer.cs">
       <DependentUpon>201510101934519_AddingLogNameColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510111430473_ConditionTypeFromStringToEnum.cs" />
+    <Compile Include="Migrations\201510111430473_ConditionTypeFromStringToEnum.Designer.cs">
+      <DependentUpon>201510111430473_ConditionTypeFromStringToEnum.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Base.cs" />
     <Compile Include="Models\IBase.cs" />
@@ -156,8 +160,14 @@
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Route.cs" />
     <Compile Include="Models\Ticket.cs" />
+    <Compile Include="Models\TypeOfTicketEnum.cs" />
     <Compile Include="Models\WorkWithDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="UserContext.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -286,6 +296,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510101934519_AddingLogNameColumn.resx">
       <DependentUpon>201510101934519_AddingLogNameColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510111430473_ConditionTypeFromStringToEnum.resx">
+      <DependentUpon>201510111430473_ConditionTypeFromStringToEnum.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -18,37 +18,37 @@
         {
             @Html.ValidationSummary()
             <div class="form-group">
-                <div class="col-sm-offset-4 col-sm-3">
-                    <p>Ваше имя: @Html.TextBoxFor(x => x.Name) </p>
+                <div class="col-sm-offset-5 col-sm-3">
+                    <p>Ваше имя: @Html.TextBoxFor(x => x.Name, new { @class = "form-control" }) </p>
                 </div>
             </div>
     <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-3">
-            <p>Ваш логин: @Html.TextBoxFor(x => x.LogName) </p>
+        <div class="col-sm-offset-5 col-sm-3">
+            <p>Ваш логин: @Html.TextBoxFor(x => x.LogName, new { @class = "form-control" }) </p>
         </div>
     </div>
             <div class="form-group">
-                <div class="col-sm-offset-4 col-sm-3">
-                    <p>Ваш email: @Html.TextBoxFor(x => x.Email)</p>
+                <div class="col-sm-offset-5 col-sm-3">
+                    <p>Ваш email: @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })</p>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-4 col-sm-3">
-                    <p>Ваш телефон: @Html.TextBoxFor(x => x.Phone)</p>
+                <div class="col-sm-offset-5 col-sm-3">
+                    <p>Ваш телефон: @Html.TextBoxFor(x => x.Phone, new { @class = "form-control" })</p>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-4 col-sm-3">
-                    <p>Номер вашего паспорта: @Html.TextBoxFor(x => x.Passport)</p>
+                <div class="col-sm-offset-5 col-sm-3">
+                    <p>Номер вашего паспорта: @Html.TextBoxFor(x => x.Passport, new { @class = "form-control" })</p>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-4 col-sm-3">
-                    <p>Введите пароль: @Html.PasswordFor(x => x.Password) </p>
+                <div class="col-sm-offset-5 col-sm-3">
+                    <p>Введите пароль: @Html.PasswordFor(x => x.Password, new { @class = "form-control" }) </p>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-4 col-sm-3">
+                <div class="col-sm-offset-5 col-sm-3">
                     <input type="submit" value="Зарегестрироваться" />
                 </div>
             </div>
@@ -59,3 +59,9 @@
 
 </body>
 </html>
+
+<style>
+    h2 {
+        text-align: center;
+    }
+</style>

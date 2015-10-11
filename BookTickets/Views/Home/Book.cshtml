@@ -28,12 +28,6 @@
                 @Html.DropDownListFor(x => x.NumberOfPlace, list, new { @id = "NumbersOfPlaces", @class = "form-control" })
              </div>
                 @Html.HiddenFor(x => x.Route.RouteID);
-                @Html.HiddenFor(x => x.Route.Cost);
-                @Html.HiddenFor(x => x.Route.FinishPoint);
-                @Html.HiddenFor(x => x.Route.StartPoint);
-                @Html.HiddenFor(x => x.Route.TimeArrival);
-                @Html.HiddenFor(x => x.Route.MaxNumberOfPlace);
-                @Html.HiddenFor(x => x.Route.RouteNumber);
                 <input class="btn btn-default" type="submit" value="Забронировать" />
                 <input class="btn btn-default" type="button" value="Отмена" onclick="location.href='@Url.Action("Index", "Home")'">
                 }

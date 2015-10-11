@@ -20,7 +20,7 @@ namespace BookTickets.Models
             }
         }
         public int NumberOfPlace { get; set; }
-        public string Condition { get; set; }
+        public TypeOfTicketEnum Condition { get; set; }
         public bool IsDeleted { get; set; }
         public virtual Route Route { get; set; }
         public virtual Person Person { get; set; }

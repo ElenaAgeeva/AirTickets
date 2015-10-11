@@ -22,20 +22,20 @@ namespace BookTickets.Controllers
 
         public ActionResult BuyFromIndex(int routeId)
         {
-            Session["RouteID"] = routeId;
+            Session[BookTickets.Properties.Resources.RouteID] = routeId;
             return RedirectToAction("TryBuy");
         }
 
         public ActionResult BookFromIndex(int routeId)
         {
-            Session["RouteID"] = routeId;
+            Session[BookTickets.Properties.Resources.RouteID] = routeId;
             return RedirectToAction("TryBook");
         }
 
         [HttpGet]
         public ActionResult TryBuy()
         {
-            if (Session["LogInUserPassword"] != null && Session["LogInUserName"] != null)
+            if (Session[BookTickets.Properties.Resources.LogInUserPassword] != null && Session[BookTickets.Properties.Resources.LogInUserName] != null)
             {
                 return RedirectToAction("Buy");
             }
@@ -50,8 +50,8 @@ namespace BookTickets.Controllers
         {
             if (check(logperson.LogName, logperson.Password.GetHashCode().ToString()))
             {
-                Session["LogInUserPassword"] = logperson.Password.GetHashCode().ToString();
-                Session["LogInUserName"] = logperson.LogName;
+                Session[BookTickets.Properties.Resources.LogInUserPassword] = logperson.Password.GetHashCode().ToString();
+                Session[BookTickets.Properties.Resources.LogInUserName] = logperson.LogName;
                 return RedirectToAction("Buy");
                 
             }
@@ -67,7 +67,7 @@ namespace BookTickets.Controllers
             Ticket ticket = new Ticket();
             using (WorkWithDatabase db = new WorkWithDatabase())
             {
-                string s = Session["RouteID"].ToString();
+                string s = Session[BookTickets.Properties.Resources.RouteID].ToString();
                 if (s != null)
                 {
                     int r = Convert.ToInt32(s);
@@ -85,9 +85,9 @@ namespace BookTickets.Controllers
             {
                 using (WorkWithDatabase db = new WorkWithDatabase())
                 {
-                    tick.Condition = "bought";
-                    string s1 = Session["LogInUserName"].ToString();
-                    string s2 = Session["LogInUserPassword"].ToString();
+                    tick.Condition = TypeOfTicketEnum.Bought;
+                    string s1 = Session[BookTickets.Properties.Resources.LogInUserName].ToString();
+                    string s2 = Session[BookTickets.Properties.Resources.LogInUserPassword].ToString();
                     var per = db.GetEntityList<Person>().Where(x => x.LogName.Equals(s1) && x.Password.Equals(s2)).FirstOrDefault();
                     var route = db.GetEntityById<Route, int>(tick.Route.RouteID);
                     tick.Person = per;
@@ -103,13 +103,24 @@ namespace BookTickets.Controllers
             }
         }
 
+        public ActionResult BuyBookTicket(int tickId)
+        {
+            using (WorkWithDatabase db = new WorkWithDatabase())
+            {
+                Ticket tick = db.GetEntityById<Ticket, int>(tickId);
+                tick.Condition = TypeOfTicketEnum.Bought;
+                db.Commit();
+            }
+            return RedirectToAction("TicketInformation");
+        }
+
         public ActionResult TicketInformation()
         {
             List<Ticket> tickets = new List<Ticket>();
             using (WorkWithDatabase db = new WorkWithDatabase())
             {
-                string s1 = Session["LogInUserName"].ToString();
-                string s2 = Session["LogInUserPassword"].ToString();
+                string s1 = Session[BookTickets.Properties.Resources.LogInUserName].ToString();
+                string s2 = Session[BookTickets.Properties.Resources.LogInUserPassword].ToString();
                 var t = db.GetEntityList<Person>().Where(x => x.LogName.Equals(s1) && x.Password.Equals(s2)).Select(x => x.PersonID).FirstOrDefault();
 
                 tickets = db.GetEntityList<Ticket>().Where(x => x.Person.PersonID.Equals(t)).ToList();
@@ -135,7 +146,7 @@ namespace BookTickets.Controllers
         [HttpGet]
         public ActionResult TryBook()
         {
-            if (Session["LogInUserPassword"] != null && Session["LogInUserName"] != null)
+            if (Session[BookTickets.Properties.Resources.LogInUserPassword] != null && Session[BookTickets.Properties.Resources.LogInUserName] != null)
             {
                 return RedirectToAction("Book");
             }
@@ -150,8 +161,8 @@ namespace BookTickets.Controllers
         {
             if (check(logperson.LogName, logperson.Password.GetHashCode().ToString()))
             {
-                Session["LogInUserPassword"] = logperson.Password.GetHashCode().ToString();
-                Session["LogInUserName"] = logperson.LogName;
+                Session[BookTickets.Properties.Resources.LogInUserPassword] = logperson.Password.GetHashCode().ToString();
+                Session[BookTickets.Properties.Resources.LogInUserName] = logperson.LogName;
                 return RedirectToAction("Book");
 
             }
@@ -167,7 +178,7 @@ namespace BookTickets.Controllers
             Ticket ticket = new Ticket();
             using (WorkWithDatabase db = new WorkWithDatabase())
             {
-                string s = Session["RouteID"].ToString();
+                string s = Session[BookTickets.Properties.Resources.RouteID].ToString();
                 if (s != null)
                 {
                     int r = Convert.ToInt32(s);
@@ -186,11 +197,13 @@ namespace BookTickets.Controllers
                 List<Ticket> tickets = new List<Ticket>();
                 using (WorkWithDatabase db = new WorkWithDatabase())
                 {
-                    tick.Condition = "booked";
-                    string s1 = Session["LogInUserName"].ToString();
-                    string s2 = Session["LogInUserPassword"].ToString();
+                    tick.Condition = TypeOfTicketEnum.Booked;
+                    string s1 = Session[BookTickets.Properties.Resources.LogInUserName].ToString();
+                    string s2 = Session[BookTickets.Properties.Resources.LogInUserPassword].ToString();
                     var per = db.GetEntityList<Person>().Where(x => x.LogName.Equals(s1) && x.Password.Equals(s2)).FirstOrDefault();
-                    tick.Person = per ;
+                    var route = db.GetEntityById<Route, int>(tick.Route.RouteID);
+                    tick.Person = per;
+                    tick.Route = route;
                     db.Insert<Ticket>(tick);
                     db.Commit();
                 }
@@ -213,8 +226,8 @@ namespace BookTickets.Controllers
         {
             if (ModelState.IsValid)
             {
-                Session["LogInUserPassword"] = regPerson.Password.GetHashCode().ToString();
-                Session["LogInUserName"] = regPerson.LogName;
+                Session[BookTickets.Properties.Resources.LogInUserPassword] = regPerson.Password.GetHashCode().ToString();
+                Session[BookTickets.Properties.Resources.LogInUserName] = regPerson.LogName;
                 using (WorkWithDatabase db = new WorkWithDatabase())
                 {
                     regPerson.Password = regPerson.Password.GetHashCode().ToString();
